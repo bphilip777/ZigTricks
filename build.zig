@@ -8,12 +8,18 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
+        .link_libc = false,
+        .strip = if (optimize == .ReleaseFast) true else null,
     });
 
     const exe = b.addExecutable(.{
         .name = "ZigTricks",
         .root_module = exe_mod,
     });
+
+    // exe.linkSystemLibrary("kernel32");
+    exe.linkSystemLibrary("user32");
+
     b.installArtifact(exe);
     const run_cmd = b.addRunArtifact(exe);
 
